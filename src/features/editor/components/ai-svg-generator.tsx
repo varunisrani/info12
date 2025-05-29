@@ -175,8 +175,14 @@ export const AiSvgGenerator = ({ editor, onClose }: AiSvgGeneratorProps) => {
       } 
       // Otherwise, try to extract SVG from the messages
       else if (data.messages && data.messages.length > 0) {
+        // Define the message type based on the request structure
+        interface ChatMessage {
+          role: string;
+          content: string;
+        }
+        
         // Find the last assistant message
-        const assistantMessages = data.messages.filter(msg => msg.role === 'assistant');
+        const assistantMessages = data.messages.filter((msg: ChatMessage) => msg.role === 'assistant');
         if (assistantMessages.length > 0) {
           const lastAssistantMessage = assistantMessages[assistantMessages.length - 1].content;
           
