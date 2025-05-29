@@ -1,0 +1,8 @@
+flask
+requests
+flask-cors
+cairosvg
+pillow
+openai
+python-dotenv
+gunicorn
