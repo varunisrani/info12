@@ -140,7 +140,6 @@ export const AiSvgGenerator = ({ editor, onClose }: AiSvgGeneratorProps) => {
       setIsSaved(false);
 
       // Use local server when running locally, otherwise use an absolute URL to the API
-      
       const apiUrl = "https://pppp-351z.onrender.com/api/chat-assistant";
       
       const response = await fetch(apiUrl, {
@@ -151,7 +150,8 @@ export const AiSvgGenerator = ({ editor, onClose }: AiSvgGeneratorProps) => {
         body: JSON.stringify({ 
           messages: [
             { role: "user", content: prompt.trim() }
-          ]
+          ],
+          generate_svg: true // Add this flag to explicitly request SVG generation
         }),
       });
 
@@ -175,14 +175,11 @@ export const AiSvgGenerator = ({ editor, onClose }: AiSvgGeneratorProps) => {
       } 
       // Otherwise, try to extract SVG from the messages
       else if (data.messages && data.messages.length > 0) {
-        // Define the message type based on the request structure
-        interface ChatMessage {
-          role: string;
-          content: string;
-        }
-        
         // Find the last assistant message
-        const assistantMessages = data.messages.filter((msg: ChatMessage) => msg.role === 'assistant');
+        const assistantMessages = data.messages.filter((msg: { role: string; content: string }) => 
+          msg.role === 'assistant'
+        );
+        
         if (assistantMessages.length > 0) {
           const lastAssistantMessage = assistantMessages[assistantMessages.length - 1].content;
           
@@ -198,7 +195,7 @@ export const AiSvgGenerator = ({ editor, onClose }: AiSvgGeneratorProps) => {
       }
 
       if (!svgCode) {
-        throw new Error("No SVG code received from the server");
+        throw new Error("No SVG code found in the response");
       }
 
       // Process the SVG for validation
